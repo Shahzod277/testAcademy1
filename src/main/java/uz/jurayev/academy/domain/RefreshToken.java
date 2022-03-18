@@ -13,7 +13,7 @@ import java.util.Objects;
 @ToString
 public class RefreshToken extends AbstractData<Long> {
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private User user;
 
