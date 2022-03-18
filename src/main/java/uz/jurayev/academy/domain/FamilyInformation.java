@@ -21,4 +21,9 @@ public class FamilyInformation {
     private String parentsRetiree; //nafaqador
     private String invalidParents;
     private String invalidStudent;
+
 }
+
+
+
+//todo phone number qoshishim kk studentgaaa

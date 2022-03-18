@@ -11,8 +11,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Tutor-Academy Api", version = "3.0", description = "Tutor-Academy info"))
 public class AcademyApplication {
-
+			
 	public static void main(String[] args) {
+		String a="234ersd";
+		for (int i = 0; i < a.length(); i++) {
+			a.charAt(i);
+		}
 		SpringApplication.run(AcademyApplication.class, args);
 	}
 

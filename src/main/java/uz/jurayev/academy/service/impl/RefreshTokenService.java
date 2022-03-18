@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.jurayev.academy.domain.RefreshToken;
+import uz.jurayev.academy.domain.User;
 import uz.jurayev.academy.exception.TokenRefreshException;
 import uz.jurayev.academy.repository.RefreshTokenRepository;
 import uz.jurayev.academy.repository.UserRepository;
@@ -25,7 +26,7 @@ public class RefreshTokenService {
 
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(userRepository.findById(userId).get());
+      refreshToken.setUser(userRepository.findById(userId).get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(SecurityConstant.REFRESH_TOKEN_EXPIRE_AT));
         refreshToken.setToken(UUID.randomUUID().toString());
         return tokenRepository.save(refreshToken);
