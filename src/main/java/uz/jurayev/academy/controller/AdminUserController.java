@@ -28,8 +28,7 @@ public class AdminUserController {
         UserResponse user = userService.create(userRequestDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("User-Agent",a);
-        System.out.println(responseHeaders);
-        return ResponseEntity.status(user!=null ? 201 : 401).headers(responseHeaders).body(responseHeaders);
+        return ResponseEntity.status(user!=null ? 201 : 401).headers(responseHeaders).body(user);
     }
 
     @GetMapping
