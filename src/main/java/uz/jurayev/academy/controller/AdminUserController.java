@@ -2,6 +2,7 @@ package uz.jurayev.academy.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +24,12 @@ public class AdminUserController {
     private final AdminUserServiceImpl userService;
 
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest userRequestDto){
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequest userRequestDto,@RequestHeader(value = "User-Agent") String a ){
         UserResponse user = userService.create(userRequestDto);
-        return ResponseEntity.status(user!=null ? 201 : 401).body(user);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("User-Agent",a);
+        System.out.println(responseHeaders);
+        return ResponseEntity.status(user!=null ? 201 : 401).headers(responseHeaders).body(responseHeaders);
     }
 
     @GetMapping
