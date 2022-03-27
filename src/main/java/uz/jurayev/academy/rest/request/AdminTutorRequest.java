@@ -8,6 +8,7 @@ import java.util.List;
 @Builder
 public class AdminTutorRequest {
     AddressRequest address;
+    String avtor;
     String category;
     String level;
     String description;

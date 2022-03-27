@@ -22,6 +22,7 @@ public class AdminTutorResponseMapper implements Mapper<Tutor, AdminTutorRespons
 
         return AdminTutorResponse.builder()
                 .id(tutor.getId())
+                .avtor(tutor.getAvtor())
                 .address(addressResponseMapper.mapFrom(tutor.getAddress()))
                 .eduInfo(responseInfo(tutor))
                 .groups(tutor.getStudentGroups().stream().map(StudentGroup::getGroupName).collect(Collectors.toList()))

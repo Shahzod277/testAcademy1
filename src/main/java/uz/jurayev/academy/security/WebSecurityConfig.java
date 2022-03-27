@@ -35,9 +35,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> {
-                    httpSecuritySessionManagementConfigurer.maximumSessions(10).maxSessionsPreventsLogin(true);
-                })
                 .authorizeRequests()
                 .antMatchers("/academy-backend/**", "/swagger-ui/**", "/api-docs/**", "/api/auth/**", "/api/user/**").permitAll()
 //                .antMatchers("/admin/api/tutor/**").hasRole("ADMIN")

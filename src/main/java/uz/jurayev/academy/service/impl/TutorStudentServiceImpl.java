@@ -87,6 +87,17 @@ public class TutorStudentServiceImpl implements StudentService {
         return studentInfoDtos;
     }
 
+    @Transactional(readOnly = true)
+    public List<StudentResponse> getAllStudentByGroup(String groupName) {
+        List<Student> allstudent = studentRepository.findStudentByGroup_GroupName(groupName);
+        List<StudentResponse> studentInfoDtos = new ArrayList<>();
+        allstudent.forEach(student -> {
+            StudentResponse infoDto = studentResponseMapper.mapFrom(student);
+            studentInfoDtos.add(infoDto);
+        });
+        return studentInfoDtos;
+    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -136,6 +147,21 @@ public class TutorStudentServiceImpl implements StudentService {
         return groupDtos;
     }
 
+    @Transactional(readOnly = true)
+    public List<StudentResponse> searchStudent(String word) {
+        List<Student> allstudent = studentRepository.searchFirstnameAndLastname(word);
+        if (allstudent.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<StudentResponse> studentInfoDtos = new ArrayList<>();
+        allstudent.forEach(student -> {
+            StudentResponse infoDto = studentResponseMapper.mapFrom(student);
+            studentInfoDtos.add(infoDto);
+        });
+        return studentInfoDtos;
+
+    }
+
     @Transactional
     public void studentDtoToEntity(StudentRequest request, Student student) {
 
@@ -176,8 +202,8 @@ public class TutorStudentServiceImpl implements StudentService {
                     creativePotentialCategory.setValue(s.toLowerCase());
                 }
                 creativePotential.addCreativePotentialCategory(creativePotentialCategory);
-//                creativePotentialCategory.setCreativePotential(creativePotential);
-//                categoryRepository.save(creativePotentialCategory);
+                //    creativePotentialCategory.setCreativePotential(creativePotential);
+                //  categoryRepository.save(creativePotentialCategory);
                 creativePotentialRepository.save(creativePotential);
                 student.addCPCategory(creativePotentialCategory);
             }

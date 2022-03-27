@@ -5,6 +5,8 @@ spring:
     password: e831a17ad570d8ae0ad24fbcfe8668ad9382dbf2a50f85b4d29232c1769d4734
 
 
+
+
   jpa:
     hibernate:
       ddl-auto: create

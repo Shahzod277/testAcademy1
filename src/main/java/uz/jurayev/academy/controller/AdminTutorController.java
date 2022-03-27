@@ -10,6 +10,8 @@ import uz.jurayev.academy.rest.response.StudentResponse;
 import uz.jurayev.academy.rest.request.AdminTutorRequest;
 import uz.jurayev.academy.rest.response.AdminTutorResponse;
 import uz.jurayev.academy.service.impl.AdminTutorServiceImpl;
+
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -31,8 +33,8 @@ public class AdminTutorController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<AdminTutorResponse> getAllTutors() {
-        return adminService.getAllTutor();
+    public List<AdminTutorResponse> getAllTutors(Principal principal) {
+        return adminService.getAllTutor(principal);
     }
 
     @GetMapping("{id}")

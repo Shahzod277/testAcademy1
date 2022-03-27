@@ -1,6 +1,9 @@
 package uz.jurayev.academy.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.jurayev.academy.domain.Student;
@@ -20,6 +23,8 @@ import uz.jurayev.academy.util.requestmapper.AddressRequestMapper;
 import uz.jurayev.academy.util.requestmapper.UserRequestMapper;
 import uz.jurayev.academy.util.responsemapper.AdminTutorResponseMapper;
 import uz.jurayev.academy.util.responsemapper.StudentResponseMapper;
+
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +55,9 @@ public class AdminTutorServiceImpl implements AdminTutorService {
     }
 
     @Transactional
-    public List<AdminTutorResponse> getAllTutor() {
-        List<Tutor> tutors = tutorRepository.findAll();
+    public List<AdminTutorResponse> getAllTutor(Principal principal) {
+
+        List<Tutor> tutors = tutorRepository.getAllTutorByUser(principal.getName());
         List<AdminTutorResponse> dtos = new ArrayList<>();
         tutors.forEach(tutor -> {
             AdminTutorResponse tutorResponseDto = tutorResponseMapper.mapFrom(tutor);
@@ -70,7 +76,7 @@ public class AdminTutorServiceImpl implements AdminTutorService {
     @Transactional
     public Result updateTutor(Integer id, AdminTutorRequest tutorDto) {
         Tutor tutor = tutorRepository.findById(id).orElseThrow(() ->
-             new TutorNotFoundException(ErrorMessages.TUTOR_NOT_FOUND.getMessage()));
+                new TutorNotFoundException(ErrorMessages.TUTOR_NOT_FOUND.getMessage()));
         tutor.getStudentGroups().clear();
         requestToEntity(tutorDto, tutor);
         return new Result("Successfully updated", true);
@@ -88,6 +94,11 @@ public class AdminTutorServiceImpl implements AdminTutorService {
     }
 
     private void requestToEntity(AdminTutorRequest tutorDto, Tutor tutor) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            tutor.setAvtor(currentUserName);
+        }
         tutor.setAddress(addressRequestMapper.mapFrom(tutorDto.getAddress()));
         tutor.setCategory(tutorDto.getCategory());
         tutor.setLevel(tutorDto.getLevel());

@@ -22,6 +22,7 @@ public class User extends AbstractData<Long> {
 
     @NotBlank(message = "Username must be unique and can't be empty")
     @Size(min = 3, max = 20, message = "Username size minimum is 3 and maximum 20 symbols")
+    @Column(unique = true)
     private String username;
 
     @NotBlank(message = "Password must can't be empty")

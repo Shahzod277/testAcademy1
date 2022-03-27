@@ -10,6 +10,7 @@ public class AdminTutorResponse {
 
     Integer id;
     AddressResponse address;
+    String avtor;
     EduResponseInfo eduInfo;
     List<String> groups;
     UserResponse user;

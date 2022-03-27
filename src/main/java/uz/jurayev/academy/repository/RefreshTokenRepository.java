@@ -13,7 +13,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     @Override
     Optional<RefreshToken> findById(Long id);
     Optional<RefreshToken> findByToken(String token);
-    Optional<RefreshToken> findRefreshTokenByUser(User user);
+    Optional<RefreshToken> findRefreshTokenByUserId(Long userId);
 
 
     @Modifying

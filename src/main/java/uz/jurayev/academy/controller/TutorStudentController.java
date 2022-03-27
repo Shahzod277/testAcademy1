@@ -11,6 +11,7 @@ import uz.jurayev.academy.rest.GroupRequest;
 import uz.jurayev.academy.rest.request.StudentRequest;
 import uz.jurayev.academy.rest.response.StudentResponse;
 import uz.jurayev.academy.service.impl.TutorStudentServiceImpl;
+
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
@@ -26,10 +27,9 @@ public class TutorStudentController {
 
     @PostMapping
     @PreAuthorize("hasRole('TUTOR')")
-    public ResponseEntity<Result> createStudent(@Valid @RequestBody StudentRequest request
-    ) {
+    public ResponseEntity<Result> createStudent(@Valid @RequestBody StudentRequest request) {
         Result save = studentService.save(request);
-        return ResponseEntity.status(save.getSuccess() ? 200 : 204).body(save);
+        return ResponseEntity.status(save.getSuccess() ? 200 : 400).body(save);
     }
 
     @GetMapping
@@ -64,5 +64,19 @@ public class TutorStudentController {
     public ResponseEntity<?> getAllGroups(Principal principal) {
         List<GroupRequest> groups = studentService.getGroups(principal);
         return ResponseEntity.status(groups != null ? 200 : 400).body(groups);
+    }
+
+    @GetMapping("/students")
+    @PreAuthorize("hasRole('TUTOR')")
+    public HttpEntity<?> getAllStudents(@RequestBody GroupRequest request) {
+        List<StudentResponse> studentInfoDtos = studentService.getAllStudentByGroup(request.getGroupName());
+        return ResponseEntity.status(studentInfoDtos != null ? 200 : 404).body(studentInfoDtos);
+    }
+
+    @GetMapping("/search/{word}")
+    @PreAuthorize("hasRole('TUTOR')")
+    public HttpEntity<?> SearchStudent(@PathVariable String word) {
+        List<StudentResponse> studentInfoDtos = studentService.searchStudent(word);
+        return ResponseEntity.status(studentInfoDtos != null ? 200 : 404).body(studentInfoDtos);
     }
 }

@@ -35,6 +35,7 @@ public class TutorServiceImpl implements TutorService {
     }
 
 
+    @Transactional
     public Tutor getCurrentTutor(Principal principal) {
         String username = principal.getName();
         return tutorRepository.findByUser_Username(username).orElseThrow(

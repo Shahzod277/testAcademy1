@@ -2,6 +2,7 @@ package uz.jurayev.academy.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public class Tutor extends AbstractData<Integer> {
     @ToString.Exclude
     private User user;
 
+    String avtor;
+
     public void addGroup(StudentGroup studentGroup) {
         studentGroups.add(studentGroup);
         studentGroup.setTutor(this);
@@ -44,6 +47,7 @@ public class Tutor extends AbstractData<Integer> {
         this.studentGroups.remove(group);
         group.setTutor(null);
     }
+
     public void removeGroups() {
         for (StudentGroup group : new ArrayList<>(studentGroups)) {
             removeGroup(group);

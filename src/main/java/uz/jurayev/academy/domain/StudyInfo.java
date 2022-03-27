@@ -25,4 +25,5 @@ public class StudyInfo {
 
     @Column(nullable = false)
     private String paymentType;
+
 }
