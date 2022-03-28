@@ -203,11 +203,12 @@ public class TutorStudentServiceImpl implements StudentService {
                 } else {
                     creativePotentialCategory.setValue(s.toLowerCase());
                 }
-                creativePotential.addCreativePotentialCategory(creativePotentialCategory);
-                //    creativePotentialCategory.setCreativePotential(creativePotential);
-                //  categoryRepository.save(creativePotentialCategory);
                 creativePotentialRepository.save(creativePotential);
+                creativePotential.addCreativePotentialCategory(creativePotentialCategory);
+
+              //  CreativePotentialCategory category = categoryRepository.save(creativePotentialCategory);
                 student.addCPCategory(creativePotentialCategory);
+              // student.getCategories().add(category);
             }
         });
     }
