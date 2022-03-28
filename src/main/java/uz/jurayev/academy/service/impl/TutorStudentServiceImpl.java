@@ -148,8 +148,10 @@ public class TutorStudentServiceImpl implements StudentService {
     }
 
     @Transactional(readOnly = true)
-    public List<StudentResponse> searchStudent(String word) {
-        List<Student> allstudent = studentRepository.searchFirstnameAndLastname(word);
+    public List<StudentResponse> searchStudent(String word,Principal principal) {
+        Tutor currentTutor = tutorService.getCurrentTutor(principal);
+        String username = currentTutor.getUser().getUsername();
+        List<Student> allstudent = studentRepository.searchFirstnameAndLastname(word,username);
         if (allstudent.isEmpty()) {
             return new ArrayList<>();
         }

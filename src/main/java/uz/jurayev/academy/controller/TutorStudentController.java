@@ -75,8 +75,8 @@ public class TutorStudentController {
 
     @GetMapping("/search/{word}")
     @PreAuthorize("hasRole('TUTOR')")
-    public HttpEntity<?> SearchStudent(@PathVariable String word) {
-        List<StudentResponse> studentInfoDtos = studentService.searchStudent(word);
+    public HttpEntity<?> SearchStudent(@PathVariable String word,Principal principal) {
+        List<StudentResponse> studentInfoDtos = studentService.searchStudent(word,principal);
         return ResponseEntity.status(studentInfoDtos != null ? 200 : 404).body(studentInfoDtos);
     }
 }

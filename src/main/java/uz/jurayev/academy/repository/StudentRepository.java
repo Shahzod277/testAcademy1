@@ -24,9 +24,9 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     List<Student> findStudentByGroup_GroupName(String group_groupName);
 
-    @Query(value = "Select *\n" +
-            "from student u\n" +
-            "where (u.firstname ilike %:word%" +
-            "     or u.lastname ilike %:word%)", nativeQuery = true)
-    List<Student> searchFirstnameAndLastname(@Param("word") String word);
+    @Query(value = "select s from Student s inner join StudentGroup sg on s.group = sg.groupName " +
+            " inner join Tutor t on t.id = sg.tutor.id" +
+            " inner join User u on u.id = t.user.id" +
+            " where s.firstname like %?1% or s.lastname like %?2% ", nativeQuery = false)
+    List<Student> searchFirstnameAndLastname(String firstname, String lastname);
 }

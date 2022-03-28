@@ -64,10 +64,17 @@ public class AdminUserServiceImpl implements UserService {
     public Result edit(Long id, UserRequest requestDto) {
 
         User user = userRepository.findById(id).orElse(new User());
-        user.getRoles().clear();
+     //   user.getRoles().clear();
         user.setModifiedDate(LocalDateTime.now());
-        dtoToEntity(requestDto, user);
-        userRepository.save(user);
+  //      dtoToEntity(requestDto, user);
+        UserProfile userProfile=new UserProfile();
+        userProfile.setBirthDate(requestDto.getProfile().getBirthDate());
+        userProfile.setFirstname(requestDto.getProfile().getFirstname());
+        userProfile.setGender(requestDto.getProfile().getGender());
+        userProfile.setPassportData(requestDto.getProfile().getPassportData());
+        userProfile.setPhoneNumber(requestDto.getProfile().getPhoneNumber());
+            user.setUserProfile(userProfile);
+            userRepository.save(user);
         return new Result("User successfully updated", true);
     }
 

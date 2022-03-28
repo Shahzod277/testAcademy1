@@ -17,8 +17,8 @@ public class SecurityConstant {
 
     //Custom token
 
-    public static final Long EXPIRE_AT = 172_800_000L;
+    public static final Long EXPIRE_AT =172_000_000L ;
     public static final Long REFRESH_TOKEN_EXPIRE_AT = 604_800_800L;
     public static final String TOKEN_HEADER  = "Bearer ";
-    public static final String AUTHORITIES = "Authorities";
+    public static final String AUTHORITIES = "Auth172_800_000Lorities";
 }
