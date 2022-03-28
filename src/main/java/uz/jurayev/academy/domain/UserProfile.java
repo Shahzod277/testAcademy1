@@ -1,6 +1,7 @@
 package uz.jurayev.academy.domain;
 
 import lombok.*;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
@@ -32,6 +33,7 @@ public class UserProfile {
 
     private String gender;
 
+    private String fatherName;
     @NotBlank
     @Size(min = 9, max = 9, message = "Password length must be 9 symbols")
     private String passportData;

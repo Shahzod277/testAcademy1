@@ -69,6 +69,8 @@ public class AdminUserServiceImpl implements UserService {
   //      dtoToEntity(requestDto, user);
         UserProfile userProfile=new UserProfile();
         userProfile.setBirthDate(requestDto.getProfile().getBirthDate());
+        userProfile.setLastname(requestDto.getProfile().getLastname());
+        userProfile.setFatherName(requestDto.getProfile().getFatherName());
         userProfile.setFirstname(requestDto.getProfile().getFirstname());
         userProfile.setGender(requestDto.getProfile().getGender());
         userProfile.setPassportData(requestDto.getProfile().getPassportData());
