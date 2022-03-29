@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://ec2-3-209-61-239.compute-1.amazonaws.com:5432/d3pe8j6usn8gug
-    username: pfvqwldvnvfrky
-    password: e831a17ad570d8ae0ad24fbcfe8668ad9382dbf2a50f85b4d29232c1769d4734
+    url: jdbc:postgresql://localhost:5432/academy
+    username: postgres
+    password: 963
 
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
