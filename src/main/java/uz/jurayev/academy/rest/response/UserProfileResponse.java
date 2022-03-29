@@ -2,6 +2,7 @@ package uz.jurayev.academy.rest.response;
 
 import lombok.Builder;
 import lombok.Value;
+
 import java.time.LocalDate;
 
 @Value
@@ -13,5 +14,6 @@ public class UserProfileResponse {
     String lastname;
     String birthDate;
     String phoneNumber;
+    String passportDate;
     String gender;
 }

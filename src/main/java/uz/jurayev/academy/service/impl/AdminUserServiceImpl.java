@@ -75,6 +75,7 @@ public class AdminUserServiceImpl implements UserService {
         userProfile.setGender(requestDto.getProfile().getGender());
         userProfile.setPassportData(requestDto.getProfile().getPassportData());
         userProfile.setPhoneNumber(requestDto.getProfile().getPhoneNumber());
+        user.setPassword(requestDto.getPassword());
             user.setUserProfile(userProfile);
             userRepository.save(user);
         return new Result("User successfully updated", true);

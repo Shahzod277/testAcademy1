@@ -14,7 +14,9 @@ public class UserProfileResponseMapper implements Mapper<UserProfile, UserProfil
        return UserProfileResponse.builder()
                 .firstname(entity.getFirstname())
                 .lastname(entity.getLastname())
+               .fatherName(entity.getFatherName())
                 .phoneNumber(entity.getPhoneNumber())
+               .passportDate(entity.getPassportData())
                 .birthDate(entity.getBirthDate())
                 .gender(entity.getGender())
                 .build();
