@@ -31,6 +31,7 @@ public class UserRequestMapper implements Mapper<UserRequest, User> {
                 .firstname(userRequestDto.getProfile().getFirstname())
                 .lastname(userRequestDto.getProfile().getLastname())
                 .birthDate(userRequestDto.getProfile().getBirthDate())
+                        .fatherName(userRequestDto.getProfile().getFatherName())
                 .phoneNumber(userRequestDto.getProfile().getPhoneNumber())
                 .passportData(userRequestDto.getProfile().getPassportData())
                 .gender(userRequestDto.getProfile().getGender())
