@@ -51,9 +51,9 @@ public class AdminTutorServiceImpl implements AdminTutorService {
     public Result createTutor(AdminTutorRequest tutorDto) {
         Tutor tutor = new Tutor();
         requestToEntity(tutorDto, tutor);
-       // UserResponse userResponse = adminUserService.create(tutorDto.getUser());
-        User user = userRequestMapper.mapFrom(tutorDto.getUser());
-        tutor.setUser(user);
+    //    UserResponse userResponse = adminUserService.create(tutorDto.getUser());
+        Result result = userRequestMapper.mapFrom(tutorDto.getUser());
+        tutor.setUser((User) result.getObject());
         tutorRepository.save(tutor);
         return new Result("Tutor successfully saved", true);
 
@@ -90,7 +90,7 @@ public class AdminTutorServiceImpl implements AdminTutorService {
                 new TutorNotFoundException(ErrorMessages.TUTOR_NOT_FOUND.getMessage()));
         tutor.getStudentGroups().clear();
         requestToEntity(tutorDto, tutor);
-        Result result = updateUser(id, tutorDto.getUser());
+        Result result = updateUser(tutor, tutorDto.getUser());
         tutor.setUser((User)result.getObject());
         tutorRepository.save(tutor);
 
@@ -114,11 +114,11 @@ public class AdminTutorServiceImpl implements AdminTutorService {
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             tutor.setAvtor(currentUserName);
-
             tutor.setAddress(addressRequestMapper.mapFrom(tutorDto.getAddress()));
             tutor.setCategory(tutorDto.getCategory());
             tutor.setLevel(tutorDto.getLevel());
             tutor.setDescription(tutorDto.getDescription());
+            tutor.setModifiedDate(LocalDateTime.now());
             tutorDto.getGroups().forEach(groupName -> {
                 StudentGroup studentGroup;
                 Optional<StudentGroup> groupByGroupName = groupRepository.findByGroupName(groupName);
@@ -138,8 +138,7 @@ public class AdminTutorServiceImpl implements AdminTutorService {
         }
     }
     @Transactional
-    public Result updateUser(Integer id, UserRequest requestDto) {
-        Tutor tutor = tutorRepository.findById(id).orElse(new Tutor());
+    public Result updateUser(Tutor tutor, UserRequest requestDto) {
         //   user.getRoles().clear();
         User user = tutor.getUser();
         user.setModifiedDate(LocalDateTime.now());
@@ -151,31 +150,31 @@ public class AdminTutorServiceImpl implements AdminTutorService {
         userProfile.setFirstname(requestDto.getProfile().getFirstname());
         userProfile.setGender(requestDto.getProfile().getGender());
         userProfile.setPassportData(requestDto.getProfile().getPassportData());
-        Optional<Tutor> byUsername = tutorRepository.findByUser_Username(requestDto.getUsername());
+        Optional<User> byUsername = userRepository.findByUsername(requestDto.getUsername());
         if (byUsername.isPresent()) {
-            if (!Objects.equals(byUsername.get().getId(), id)) {
+            if (!Objects.equals(byUsername.get().getId(), user.getId())) {
                 return new Result(UserErrorMessage.USERNAME_IS_EXISTS, false);
             } else {
-                user.setUsername(byUsername.get().getUser().getUsername());
+                user.setUsername(byUsername.get().getUsername());
             }
         }
         user.setUsername(requestDto.getUsername());
 
-        Optional<Tutor> byPhoneNumber = tutorRepository.findByUserUserProfilePhoneNumber(requestDto.getEmail());
+        Optional<User> byPhoneNumber = userRepository.findByUserProfilePhoneNumber(requestDto.getProfile().getPhoneNumber());
         if (byPhoneNumber.isPresent()) {
-            if (!Objects.equals(byPhoneNumber.get().getId(), id)) {
+            if (!Objects.equals(byPhoneNumber.get().getId(),user.getId())) {
                 return new Result(UserErrorMessage.PHONE_NUMBER_IS_EXISTS, false);
             }
-            userProfile.setPhoneNumber(byPhoneNumber.get().getUser().getUserProfile().getPhoneNumber());
+            userProfile.setPhoneNumber(byPhoneNumber.get().getUserProfile().getPhoneNumber());
 
         }
         userProfile.setPhoneNumber(requestDto.getProfile().getPhoneNumber());
-        Optional<Tutor> byEmail = tutorRepository.findByUserEmail(requestDto.getEmail());
+        Optional<User> byEmail = userRepository.findByEmail(requestDto.getEmail());
         if (byEmail.isPresent()) {
-            if (!Objects.equals(byEmail.get().getId(), id)) {
+            if (!Objects.equals(byEmail.get().getId(),user.getId())) {
                 return new Result(UserErrorMessage.EMAIL_IS_EXISTS, false);
             }
-            user.setEmail(byEmail.get().getUser().getEmail());
+            user.setEmail(byEmail.get().getEmail());
         }
         user.setEmail(requestDto.getEmail());
         user.setPassword(requestDto.getPassword());

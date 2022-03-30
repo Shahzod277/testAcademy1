@@ -2,11 +2,12 @@ package uz.jurayev.academy.util.requestmapper;
 
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.FamilyInformation;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.FamilyInformationDto;
 import uz.jurayev.academy.util.Mapper;
 
 @Component
-public class FamilyInfoRequestMapper implements Mapper<FamilyInformationDto, FamilyInformation> {
+public class FamilyInfoRequestMapper implements Mapper<FamilyInformationDto, FamilyInformation,FamilyInformation> {
 
     @Override
     public FamilyInformation mapFrom(FamilyInformationDto entity) {

@@ -2,11 +2,12 @@ package uz.jurayev.academy.util.responsemapper;
 
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.StudyInfo;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.StudyInfoDto;
 import uz.jurayev.academy.util.Mapper;
 
 @Component
-public class StudyResponseMapper implements Mapper<StudyInfo, StudyInfoDto> {
+public class StudyResponseMapper implements Mapper<StudyInfo, StudyInfoDto,StudyInfoDto> {
 
     @Override
     public StudyInfoDto mapFrom(StudyInfo entity) {

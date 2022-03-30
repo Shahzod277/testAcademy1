@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.Role;
 import uz.jurayev.academy.domain.User;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.response.RoleResponse;
 import uz.jurayev.academy.rest.response.UserResponse;
 import uz.jurayev.academy.util.Mapper;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class UserResponseMapper implements Mapper<User, UserResponse> {
+public class UserResponseMapper implements Mapper<User, UserResponse,UserResponse> {
 
     private final RoleResponseMapper roleResponseMapper;
     private final UserProfileResponseMapper profileResponseMapper;

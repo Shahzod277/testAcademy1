@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.Role;
 import uz.jurayev.academy.domain.User;
 import uz.jurayev.academy.domain.UserProfile;
+import uz.jurayev.academy.exception.UserErrorMessage;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.repository.RoleRepository;
 import uz.jurayev.academy.repository.UserRepository;
 import uz.jurayev.academy.rest.request.UserRequest;
@@ -16,18 +18,30 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserRequestMapper implements Mapper<UserRequest, User> {
+public class UserRequestMapper implements Mapper<UserRequest, User,Result> {
 
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository  userRepository;
 
     @Override
-    public User mapFrom(UserRequest userRequestDto) {
+    public Result mapFrom(UserRequest userRequestDto) {
         User user = new User();
+        Optional<User> byUsername = userRepository.findByUsername(userRequestDto.getUsername());
+        if (byUsername.isPresent()){
+            return new Result(UserErrorMessage.USERNAME_IS_EXISTS,false);
+        }
         user.setUsername(userRequestDto.getUsername());
+        Optional<User> byEmail = userRepository.findByEmail(userRequestDto.getEmail());
+        if (byEmail.isPresent()) {
+            return new Result(UserErrorMessage.EMAIL_IS_EXISTS,false);
+        }
         user.setEmail(userRequestDto.getEmail());
         user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        Optional<User> phoneNumber = userRepository.findByUserProfilePhoneNumber(userRequestDto.getProfile().getPhoneNumber());
+        if (byEmail.isPresent()) {
+            return new Result(UserErrorMessage.PHONE_NUMBER_IS_EXISTS,false);
+        }
         user.setUserProfile(UserProfile.builder()
                 .firstname(userRequestDto.getProfile().getFirstname())
                 .lastname(userRequestDto.getProfile().getLastname())
@@ -56,6 +70,6 @@ public class UserRequestMapper implements Mapper<UserRequest, User> {
             }
 //            roleRepository.save(role);
         });
-        return user;
+        return new Result("user saved",true,user);
     }
 }

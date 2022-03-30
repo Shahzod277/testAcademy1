@@ -2,11 +2,12 @@ package uz.jurayev.academy.util.requestmapper;
 
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.StudyInfo;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.StudyInfoDto;
 import uz.jurayev.academy.util.Mapper;
 
 @Component
-public class StudyRequestMapper implements Mapper<StudyInfoDto, StudyInfo> {
+public class StudyRequestMapper implements Mapper<StudyInfoDto, StudyInfo,StudyInfo> {
 
     @Override
     public StudyInfo mapFrom(StudyInfoDto entity) {

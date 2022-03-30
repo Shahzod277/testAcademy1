@@ -2,11 +2,12 @@ package uz.jurayev.academy.util.requestmapper;
 
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.Address;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.request.AddressRequest;
 import uz.jurayev.academy.util.Mapper;
 
 @Component
-public class AddressRequestMapper implements Mapper<AddressRequest, Address> {
+public class AddressRequestMapper implements Mapper<AddressRequest, Address,Address> {
 
     @Override
     public Address mapFrom(AddressRequest addressRequestDto) {

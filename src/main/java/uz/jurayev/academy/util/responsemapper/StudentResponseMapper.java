@@ -3,12 +3,13 @@ package uz.jurayev.academy.util.responsemapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.Student;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.response.StudentResponse;
 import uz.jurayev.academy.util.Mapper;
 
 @Component
 @RequiredArgsConstructor
-public class StudentResponseMapper implements Mapper<Student, StudentResponse> {
+public class StudentResponseMapper implements Mapper<Student, StudentResponse,StudentResponse> {
 
     private final StudentGroupResponseMapper groupResponseMapper;
     private final FamilyInformationResponseMapper familyInfoResponseMapper;

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.StudentGroup;
 import uz.jurayev.academy.domain.Tutor;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.response.AdminTutorResponse;
 import uz.jurayev.academy.rest.response.EduResponseInfo;
 import uz.jurayev.academy.util.Mapper;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class AdminTutorResponseMapper implements Mapper<Tutor, AdminTutorResponse> {
+public class AdminTutorResponseMapper implements Mapper<Tutor, AdminTutorResponse,AdminTutorResponse> {
 
     private final AddressResponseMapper addressResponseMapper;
     private final UserResponseMapper userResponseMapper;

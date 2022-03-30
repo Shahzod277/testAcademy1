@@ -2,11 +2,12 @@ package uz.jurayev.academy.util.responsemapper;
 
 import org.springframework.stereotype.Component;
 import uz.jurayev.academy.domain.UserProfile;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.response.UserProfileResponse;
 import uz.jurayev.academy.util.Mapper;
 
 @Component
-public class UserProfileResponseMapper implements Mapper<UserProfile, UserProfileResponse> {
+public class UserProfileResponseMapper implements Mapper<UserProfile, UserProfileResponse,UserProfileResponse> {
 
     @Override
     public UserProfileResponse mapFrom(UserProfile entity) {

@@ -1,5 +1,7 @@
 package uz.jurayev.academy.util;
 
-public interface Mapper<T, R> {
-    R  mapFrom(T entity);
+import uz.jurayev.academy.model.Result;
+
+public interface Mapper<T, R,K> {
+    K mapFrom(T entity);
 }

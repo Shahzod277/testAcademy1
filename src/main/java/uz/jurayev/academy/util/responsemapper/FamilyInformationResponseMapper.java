@@ -1,14 +1,16 @@
 package uz.jurayev.academy.util.responsemapper;
 
 import org.springframework.stereotype.Component;
+import uz.jurayev.academy.domain.FamilyInformation;
+import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.rest.FamilyInformationDto;
 import uz.jurayev.academy.util.Mapper;
 
 @Component
-public class FamilyInformationResponseMapper implements Mapper<uz.jurayev.academy.domain.FamilyInformation, FamilyInformationDto> {
+public class FamilyInformationResponseMapper implements Mapper<FamilyInformation, FamilyInformationDto,FamilyInformationDto> {
 
     @Override
-    public FamilyInformationDto mapFrom(uz.jurayev.academy.domain.FamilyInformation entity) {
+    public FamilyInformationDto mapFrom(FamilyInformation entity) {
         FamilyInformationDto familyInformationDto=new FamilyInformationDto();
         familyInformationDto.setParentsName(entity.getParentsName());
         familyInformationDto.setPhoneNumber(entity.getPhoneNumber());
