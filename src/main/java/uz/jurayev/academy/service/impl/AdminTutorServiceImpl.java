@@ -147,6 +147,7 @@ public class AdminTutorServiceImpl implements AdminTutorService {
         userProfile.setBirthDate(requestDto.getProfile().getBirthDate());
         userProfile.setLastname(requestDto.getProfile().getLastname());
         userProfile.setFatherName(requestDto.getProfile().getFatherName());
+
         userProfile.setFirstname(requestDto.getProfile().getFirstname());
         userProfile.setGender(requestDto.getProfile().getGender());
         userProfile.setPassportData(requestDto.getProfile().getPassportData());
@@ -177,7 +178,9 @@ public class AdminTutorServiceImpl implements AdminTutorService {
             user.setEmail(byEmail.get().getEmail());
         }
         user.setEmail(requestDto.getEmail());
-        user.setPassword(requestDto.getPassword());
+        if (!requestDto.getPassword().isEmpty()){
+            user.setPassword(requestDto.getPassword());
+        }
         user.setUserProfile(userProfile);
         return new Result("User successfully updated", true,user);
     }

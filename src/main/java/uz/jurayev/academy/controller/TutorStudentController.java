@@ -71,7 +71,7 @@ public class TutorStudentController {
         return ResponseEntity.status(groups != null ? 200 : 400).body(groups);
     }
 
-    @GetMapping("/students")
+    @GetMapping("/bygroup")
     @PreAuthorize("hasRole('TUTOR')")
     public HttpEntity<?> getAllStudentsByGroup(@RequestBody GroupRequest request) {
         List<StudentResponse> studentInfoDtos = studentService.getAllStudentByGroup(request.getGroupName());
