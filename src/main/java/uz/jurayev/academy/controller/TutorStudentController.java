@@ -2,6 +2,9 @@ package uz.jurayev.academy.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,8 +37,10 @@ public class TutorStudentController {
 
     @GetMapping
     @PreAuthorize("hasRole('TUTOR')")
-    public HttpEntity<?> getAllStudents(Principal principal) {
-        List<StudentResponse> studentInfoDtos = studentService.getStudents(principal);
+    public HttpEntity<?> getAllStudents(@RequestParam(value = "page",defaultValue = "1")Integer page ,
+                                        @RequestParam(value = "limit",defaultValue = "4")Integer limit  , Principal principal) {
+
+        List<StudentResponse> studentInfoDtos = studentService.getStudents(principal,page,limit);
         return ResponseEntity.status(studentInfoDtos != null ? 200 : 404).body(studentInfoDtos);
     }
 
@@ -68,7 +73,7 @@ public class TutorStudentController {
 
     @GetMapping("/students")
     @PreAuthorize("hasRole('TUTOR')")
-    public HttpEntity<?> getAllStudents(@RequestBody GroupRequest request) {
+    public HttpEntity<?> getAllStudentsByGroup(@RequestBody GroupRequest request) {
         List<StudentResponse> studentInfoDtos = studentService.getAllStudentByGroup(request.getGroupName());
         return ResponseEntity.status(studentInfoDtos != null ? 200 : 404).body(studentInfoDtos);
     }

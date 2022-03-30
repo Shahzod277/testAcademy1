@@ -6,18 +6,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.jurayev.academy.domain.Student;
-import uz.jurayev.academy.domain.StudentGroup;
-import uz.jurayev.academy.domain.Tutor;
+import uz.jurayev.academy.domain.*;
 import uz.jurayev.academy.exception.ErrorMessages;
 import uz.jurayev.academy.exception.TutorNotFoundException;
+import uz.jurayev.academy.exception.UserErrorMessage;
 import uz.jurayev.academy.model.Result;
 import uz.jurayev.academy.repository.GroupRepository;
 import uz.jurayev.academy.repository.StudentRepository;
 import uz.jurayev.academy.repository.TutorRepository;
+import uz.jurayev.academy.repository.UserRepository;
+import uz.jurayev.academy.rest.request.UserRequest;
 import uz.jurayev.academy.rest.response.StudentResponse;
 import uz.jurayev.academy.rest.request.AdminTutorRequest;
 import uz.jurayev.academy.rest.response.AdminTutorResponse;
+import uz.jurayev.academy.rest.response.UserResponse;
 import uz.jurayev.academy.service.AdminTutorService;
 import uz.jurayev.academy.util.requestmapper.AddressRequestMapper;
 import uz.jurayev.academy.util.requestmapper.UserRequestMapper;
@@ -25,8 +27,10 @@ import uz.jurayev.academy.util.responsemapper.AdminTutorResponseMapper;
 import uz.jurayev.academy.util.responsemapper.StudentResponseMapper;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -40,12 +44,19 @@ public class AdminTutorServiceImpl implements AdminTutorService {
     private final AddressRequestMapper addressRequestMapper;
     private final StudentResponseMapper studentResponseMapper;
     private final StudentRepository studentRepository;
+    private final AdminUserServiceImpl adminUserService;
+    private final UserRepository userRepository;
 
     @Transactional
     public Result createTutor(AdminTutorRequest tutorDto) {
         Tutor tutor = new Tutor();
         requestToEntity(tutorDto, tutor);
+       // UserResponse userResponse = adminUserService.create(tutorDto.getUser());
+        User user = userRequestMapper.mapFrom(tutorDto.getUser());
+        tutor.setUser(user);
+        tutorRepository.save(tutor);
         return new Result("Tutor successfully saved", true);
+
     }
 
     @Transactional
@@ -79,6 +90,10 @@ public class AdminTutorServiceImpl implements AdminTutorService {
                 new TutorNotFoundException(ErrorMessages.TUTOR_NOT_FOUND.getMessage()));
         tutor.getStudentGroups().clear();
         requestToEntity(tutorDto, tutor);
+        Result result = updateUser(id, tutorDto.getUser());
+        tutor.setUser((User)result.getObject());
+        tutorRepository.save(tutor);
+
         return new Result("Successfully updated", true);
     }
 
@@ -93,31 +108,78 @@ public class AdminTutorServiceImpl implements AdminTutorService {
         return list;
     }
 
-    private void requestToEntity(AdminTutorRequest tutorDto, Tutor tutor) {
+    @Transactional
+    public void requestToEntity(AdminTutorRequest tutorDto, Tutor tutor) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUserName = authentication.getName();
             tutor.setAvtor(currentUserName);
+
+            tutor.setAddress(addressRequestMapper.mapFrom(tutorDto.getAddress()));
+            tutor.setCategory(tutorDto.getCategory());
+            tutor.setLevel(tutorDto.getLevel());
+            tutor.setDescription(tutorDto.getDescription());
+            tutorDto.getGroups().forEach(groupName -> {
+                StudentGroup studentGroup;
+                Optional<StudentGroup> groupByGroupName = groupRepository.findByGroupName(groupName);
+                if (groupByGroupName.isPresent()) {
+                    studentGroup = groupByGroupName.get();
+                    studentGroup.setGroupName(studentGroup.getGroupName());
+                    tutor.addGroup(studentGroup);
+                } else {
+                    studentGroup = new StudentGroup();
+                    studentGroup.setGroupName(groupName);
+                    studentGroup.setTutor(new Tutor());
+                    tutor.addGroup(studentGroup);
+                }
+            });
+
+
         }
-        tutor.setAddress(addressRequestMapper.mapFrom(tutorDto.getAddress()));
-        tutor.setCategory(tutorDto.getCategory());
-        tutor.setLevel(tutorDto.getLevel());
-        tutor.setDescription(tutorDto.getDescription());
-        tutorDto.getGroups().forEach(groupName -> {
-            StudentGroup studentGroup;
-            Optional<StudentGroup> groupByGroupName = groupRepository.findByGroupName(groupName);
-            if (groupByGroupName.isPresent()) {
-                studentGroup = groupByGroupName.get();
-                studentGroup.setGroupName(studentGroup.getGroupName());
-                tutor.addGroup(studentGroup);
+    }
+    @Transactional
+    public Result updateUser(Integer id, UserRequest requestDto) {
+        Tutor tutor = tutorRepository.findById(id).orElse(new Tutor());
+        //   user.getRoles().clear();
+        User user = tutor.getUser();
+        user.setModifiedDate(LocalDateTime.now());
+        //      dtoToEntity(requestDto, user);
+        UserProfile userProfile = new UserProfile();
+        userProfile.setBirthDate(requestDto.getProfile().getBirthDate());
+        userProfile.setLastname(requestDto.getProfile().getLastname());
+        userProfile.setFatherName(requestDto.getProfile().getFatherName());
+        userProfile.setFirstname(requestDto.getProfile().getFirstname());
+        userProfile.setGender(requestDto.getProfile().getGender());
+        userProfile.setPassportData(requestDto.getProfile().getPassportData());
+        Optional<Tutor> byUsername = tutorRepository.findByUser_Username(requestDto.getUsername());
+        if (byUsername.isPresent()) {
+            if (!Objects.equals(byUsername.get().getId(), id)) {
+                return new Result(UserErrorMessage.USERNAME_IS_EXISTS, false);
             } else {
-                studentGroup = new StudentGroup();
-                studentGroup.setGroupName(groupName);
-                studentGroup.setTutor(new Tutor());
-                tutor.addGroup(studentGroup);
+                user.setUsername(byUsername.get().getUser().getUsername());
             }
-        });
-        tutor.setUser(userRequestMapper.mapFrom(tutorDto.getUser()));
-        tutorRepository.save(tutor);
+        }
+        user.setUsername(requestDto.getUsername());
+
+        Optional<Tutor> byPhoneNumber = tutorRepository.findByUserUserProfilePhoneNumber(requestDto.getEmail());
+        if (byPhoneNumber.isPresent()) {
+            if (!Objects.equals(byPhoneNumber.get().getId(), id)) {
+                return new Result(UserErrorMessage.PHONE_NUMBER_IS_EXISTS, false);
+            }
+            userProfile.setPhoneNumber(byPhoneNumber.get().getUser().getUserProfile().getPhoneNumber());
+
+        }
+        userProfile.setPhoneNumber(requestDto.getProfile().getPhoneNumber());
+        Optional<Tutor> byEmail = tutorRepository.findByUserEmail(requestDto.getEmail());
+        if (byEmail.isPresent()) {
+            if (!Objects.equals(byEmail.get().getId(), id)) {
+                return new Result(UserErrorMessage.EMAIL_IS_EXISTS, false);
+            }
+            user.setEmail(byEmail.get().getUser().getEmail());
+        }
+        user.setEmail(requestDto.getEmail());
+        user.setPassword(requestDto.getPassword());
+        user.setUserProfile(userProfile);
+        return new Result("User successfully updated", true,user);
     }
 }

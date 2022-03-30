@@ -1,6 +1,10 @@
 package uz.jurayev.academy.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.jurayev.academy.domain.Address;
@@ -76,15 +80,17 @@ public class TutorStudentServiceImpl implements StudentService {
     }
 
     @Transactional(readOnly = true)
-    public List<StudentResponse> getStudents(Principal principal) {
+    public List<StudentResponse> getStudents(Principal principal,Integer page,Integer limit) {
+        Pageable pageable= PageRequest.of(page,limit);
         Tutor currentTutor = tutorService.getCurrentTutor(principal);
-        List<Student> allstudent = studentRepository.getAllStudent(currentTutor.getUser().getUsername());
-        List<StudentResponse> studentInfoDtos = new ArrayList<>();
-        allstudent.forEach(student -> {
+        Page<Student> allstudent = studentRepository.getAllStudent(currentTutor.getUser().getUsername(),pageable);
+        List<Student> studentInfoDtos =allstudent.getContent();
+        List<StudentResponse> studentResponses=new ArrayList<>();
+        studentInfoDtos.forEach(student -> {
             StudentResponse infoDto = studentResponseMapper.mapFrom(student);
-            studentInfoDtos.add(infoDto);
+            studentResponses.add(infoDto);
         });
-        return studentInfoDtos;
+        return studentResponses;
     }
 
     @Transactional(readOnly = true)
@@ -118,6 +124,8 @@ public class TutorStudentServiceImpl implements StudentService {
         }
     }
 
+
+
     //    @Override   //apidan studentni olib keladi
 //    public StudentInfoDto getStudentByApi(PinflDto pinflDto) {
 //
@@ -147,11 +155,11 @@ public class TutorStudentServiceImpl implements StudentService {
         return groupDtos;
     }
 
-    @Transactional(readOnly = true)
-    public List<StudentResponse> searchStudent(String word,Principal principal) {
+    @Transactional()
+    public List<StudentResponse> searchStudent(String word, Principal principal) {
         Tutor currentTutor = tutorService.getCurrentTutor(principal);
         String username = currentTutor.getUser().getUsername();
-        List<Student> allstudent = studentRepository.searchFirstnameAndLastname(word,username);
+        List<Student> allstudent = studentRepository.searchFirstnameAndLastname(word, username);
         if (allstudent.isEmpty()) {
             return new ArrayList<>();
         }
@@ -206,9 +214,9 @@ public class TutorStudentServiceImpl implements StudentService {
                 creativePotentialRepository.save(creativePotential);
                 creativePotential.addCreativePotentialCategory(creativePotentialCategory);
 
-              //  CreativePotentialCategory category = categoryRepository.save(creativePotentialCategory);
+                //  CreativePotentialCategory category = categoryRepository.save(creativePotentialCategory);
                 student.addCPCategory(creativePotentialCategory);
-              // student.getCategories().add(category);
+                // student.getCategories().add(category);
             }
         });
     }

@@ -1,10 +1,14 @@
 package uz.jurayev.academy.rest.response;
 
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import uz.jurayev.academy.domain.Student;
 import uz.jurayev.academy.rest.CreativePotential;
 import uz.jurayev.academy.rest.FamilyInformationDto;
 import uz.jurayev.academy.rest.GroupRequest;
 import uz.jurayev.academy.rest.StudyInfoDto;
+
 import java.time.LocalDate;
 import java.util.List;
 

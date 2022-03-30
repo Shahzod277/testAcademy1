@@ -20,17 +20,11 @@ import java.util.Objects;
 @NamedEntityGraph(name = "user.roles", attributeNodes = @NamedAttributeNode("roles"))
 public class User extends AbstractData<Long> {
 
-    @NotBlank(message = "Username must be unique and can't be empty")
-    @Size(min = 3, max = 20, message = "Username size minimum is 3 and maximum 20 symbols")
-    @Column(unique = true)
     private String username;
 
-    @NotBlank(message = "Password must can't be empty")
 //    @Size(min = 6, max = 20, message = "Password size minimum is 6 and maximum 15 symbols")
     private String password;
 
-    @NotBlank(message = "Email must be unique and can't be empty")
-    @Email
     private String email;
 
     @ManyToMany(cascade = CascadeType.ALL)

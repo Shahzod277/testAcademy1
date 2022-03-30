@@ -7,6 +7,7 @@ import uz.jurayev.academy.domain.Role;
 import uz.jurayev.academy.domain.User;
 import uz.jurayev.academy.domain.UserProfile;
 import uz.jurayev.academy.repository.RoleRepository;
+import uz.jurayev.academy.repository.UserRepository;
 import uz.jurayev.academy.rest.request.UserRequest;
 import uz.jurayev.academy.util.Mapper;
 
@@ -19,10 +20,10 @@ public class UserRequestMapper implements Mapper<UserRequest, User> {
 
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository  userRepository;
 
     @Override
     public User mapFrom(UserRequest userRequestDto) {
-
         User user = new User();
         user.setUsername(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
